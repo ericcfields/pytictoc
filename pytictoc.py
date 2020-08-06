@@ -8,8 +8,8 @@ Documentation: https://pypi.python.org/pypi/pytictoc
 """
 
 __author__       = 'Eric Fields'
-__version__      = '1.5.0'
-__version_date__ = '29 April 2017'
+__version__      = '1.5.1'
+__version_date__ = '6 August 2020'
 
 
 from timeit import default_timer

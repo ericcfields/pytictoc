@@ -9,7 +9,7 @@ import sys
 if sys.version_info.major == 3:
     from importlib import reload
     
-os.chdir(r'C:\Users\efield02\Documents\Eric (Local)\Coding\Python\pytictoc')
+os.chdir(r'C:\Users\ecfne\Documents\Eric\Coding\Python\pytictoc')
 
 try:
     reload(pytictoc)
