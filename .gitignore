@@ -1,7 +1,8 @@
 #Files to ignore for pytictoc repo
 
 ### Folders to ignore ###
-
 build
 dist
 pytictoc.egg-info
+OLD
+__pycache__

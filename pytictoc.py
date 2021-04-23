@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-#Tested in Python 2.7, 3.6
 
 """
 Module with class TicToc to replicate the functionality of MATLAB's tic and toc.
@@ -8,8 +7,8 @@ Documentation: https://pypi.python.org/pypi/pytictoc
 """
 
 __author__       = 'Eric Fields'
-__version__      = '1.5.1'
-__version_date__ = '6 August 2020'
+__version__      = '1.5.2'
+__version_date__ = '23 April 2021'
 
 
 from timeit import default_timer
