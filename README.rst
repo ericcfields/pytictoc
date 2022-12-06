@@ -23,28 +23,27 @@ USAGE
 
 Basic usage: ::
 
-  >> from pytictoc import TicToc
-  >> t = TicToc() #create instance of class
+  >> from pytictoc import timer # creates a timer object with methods `tic` and `toc`
 
-  >> t.tic() #Start timer
-  >> t.toc() #Time elapsed since t.tic()
+  >> timer.tic() #Start timer
+  >> timer.toc() #Time elapsed since timer.tic()
   Elapsed time is 2.612231 seconds.
 
 A string passed to the toc method changes the printed message. This can be useful to differentiate timing of different sections in the same script. ::
 
-  >> t.toc('Section 1 took')
+  >> timer.toc('Section 1 took')
   Section 1 took 16.494467 seconds.
 
-An optional keyword argument restarts the timer (equivalent to t.tic()) after reporting the time elapsed. ::
+An optional keyword argument restarts the timer (equivalent to timer.tic()) after reporting the time elapsed. ::
 
-  >> t.toc(restart=True)
+  >> timer.toc(restart=True)
   Elapsed time is 36.986837 seconds.
-  >>t.toc()
+  >>timer.toc()
   Elapsed time is 2.393425 seconds.
 
 If you want to return the time elapsed to a variable rather than printing it, use the tocvalue method. ::
 
-  >>spam = t.tocvalue()
+  >>spam = timer.tocvalue()
   >>spam
   20.156261717544602
 
