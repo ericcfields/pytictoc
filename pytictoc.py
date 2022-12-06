@@ -75,3 +75,5 @@ class TicToc(object):
         self.end = default_timer()
         self.elapsed = self.end - self.start
         print('Elapsed time is %f seconds.' % self.elapsed)
+
+timer = TicToc()
