@@ -13,6 +13,7 @@ __version_date__ = '23 April 2021'
 import sys
 from timeit import default_timer
 
+
 class TicToc(object):
 
     """
@@ -29,7 +30,7 @@ class TicToc(object):
     TicToc.elapsed   #t.end - t.start; i.e., time elapsed from t.start when t.toc() or t.tocvalue() was last called
     """
 
-    def __init__(self, default_msg='Elapsed time is', stream=None, timer=default_timer):
+    def __init__(self, default_msg='Elapsed time is', stream=None, timer=None):
         """
         Create instance of TicToc class.
 
@@ -38,12 +39,15 @@ class TicToc(object):
             stream          - Stream to write the timer message to
             timer           - Function that returns the current time when called
         """
+
         self.start   = float('nan')
         self.end     = float('nan')
         self.elapsed = float('nan')
         self.default_msg = default_msg
         self.stream = stream or sys.stdout
-        self.timer = timer
+
+        # Lazily accessing default timer allows the user to override it later per the docs.
+        self.timer = timer or (lambda: default_timer())
         assert self.timer is not None
         assert self.default_msg is not None
         assert self.stream is not None

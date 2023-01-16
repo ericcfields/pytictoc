@@ -13,13 +13,19 @@ class BaseTicTocTest(unittest.TestCase, metaclass=ABCMeta):
     def setUp(self):
         self.mock_time = 0
         self.stream = StringIO()
-        self.tt = ptt.TicToc(default_msg="Time:", stream=self.stream, timer=lambda: self.mock_time)
+        self.mock_timer = lambda: self.mock_time
+        self.tt = ptt.TicToc(default_msg="Time:", stream=self.stream, timer=self.mock_timer)
 
     def output(self):
         return self.stream.getvalue()
 
-    def time_passed(self):
+    def times_passed(self):
         return re.findall(r'([-\d\.,]+) seconds.$', self.output(), re.MULTILINE)
+
+    def last_time_passed(self):
+        times_passed = self.times_passed()
+        self.assertGreater(len(times_passed), 0, self.err_msg())
+        return float(times_passed[-1])
 
     def err_msg(self):
         raw_output = self.output().splitlines() or ["<null>"]
@@ -37,9 +43,7 @@ class BaseTicTocTest(unittest.TestCase, metaclass=ABCMeta):
         self._run_tictoc(start_time, end_time, **toc_args)
         self.assertTime(start_time, self.tt.start)
         self.assertTime(end_time, self.tt.end)
-        time_passed = self.time_passed()
-        self.assertGreater(len(time_passed), 0, self.err_msg())
-        self.assertTime(end_time - start_time, float(time_passed[-1]))
+        self.assertTime(end_time - start_time, self.last_time_passed())
         self.assertTime(end_time - start_time, self.tt.tocvalue())
 
     def assertTime(self, expected, actual, *args, **kwargs):
@@ -71,13 +75,13 @@ class BaseTicTocTest(unittest.TestCase, metaclass=ABCMeta):
         self.tictoc(4, 25.89)
 
     def test_default_msg(self):
-        self.tt = ptt.TicToc(stream=self.stream, timer=lambda: self.mock_time)
+        self.tt = ptt.TicToc(stream=self.stream, timer=self.mock_timer)
         self.tictoc(4, 6)
         self.assertIn("Elapsed time is 2.0", self.output())
 
     def test_default_stream_is_stdout(self):
         with contextlib.redirect_stdout(self.stream):
-            self.tt = ptt.TicToc(default_msg="Time:", timer=lambda: self.mock_time)
+            self.tt = ptt.TicToc(default_msg="Time:", timer=self.mock_timer)
             self.tictoc(-4, 8.2)
             self.tictoc(8, 16)
 
@@ -89,7 +93,22 @@ class BaseTicTocTest(unittest.TestCase, metaclass=ABCMeta):
             self._run_tictoc(0, -1, lambda: time.sleep(0.01))
 
             # NB: Prior to Python 3.5 the sleep could end early. Will still work with zero.
-            self.assertGreaterEqual(float(self.time_passed()[-1]), 0)
+            self.assertGreaterEqual(self.last_time_passed(), 0)
+
+    def test_setting_default_timer(self):
+        self.tt = ptt.TicToc(stream=self.stream)
+        old_timer = ptt.default_timer
+        try:
+            ptt.default_timer = self.mock_timer
+            self.tictoc(4, 60)
+            self.tictoc(5, -2)
+        finally:
+            ptt.default_timer = old_timer
+
+    def test_not_setting_default_timer(self):
+        self.tt = ptt.TicToc(stream=self.stream)
+        self._run_tictoc(5, -2)
+        self.assertGreaterEqual(self.last_time_passed(), 0)
 
 
 class TicTocTest(BaseTicTocTest):
@@ -99,7 +118,7 @@ class TicTocTest(BaseTicTocTest):
 
     def test_msg_in_stdout(self):
         with contextlib.redirect_stdout(self.stream):
-            self.tt = ptt.TicToc(default_msg="Time:", timer=lambda: self.mock_time)
+            self.tt = ptt.TicToc(default_msg="Time:", timer=self.mock_timer)
             self.tictoc(1, -7, msg="Tic Toc")
             self.assertIn("Tic Toc -8.0", self.output())
 
@@ -123,7 +142,7 @@ class TicTocTestWithContextManager(BaseTicTocTest):
             with self.tt:
                 time.sleep(0.01)
             # NB: Prior to Python 3.5 the sleep could end early. Will still work with zero.
-            self.assertGreaterEqual(float(self.time_passed()[-1]), 0)
+            self.assertGreaterEqual(self.last_time_passed(), 0)
 
 
 del BaseTicTocTest  # Don't run the tests in the abstract class.
