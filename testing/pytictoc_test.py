@@ -35,12 +35,16 @@ class BaseTicTocTest(unittest.TestCase, metaclass=ABCMeta):
 
     def tictoc(self, start_time=0, end_time=0, **toc_args):
         self._run_tictoc(start_time, end_time, **toc_args)
-        # Measure equality to 6 decimal places to avoid float precision errors
-        self.assertAlmostEqual(start_time, self.tt.start, 6, self.err_msg())
-        self.assertAlmostEqual(end_time, self.tt.end, 6, self.err_msg())
+        self.assertTime(start_time, self.tt.start)
+        self.assertTime(end_time, self.tt.end)
         time_passed = self.time_passed()
         self.assertGreater(len(time_passed), 0, self.err_msg())
-        self.assertAlmostEqual(end_time - start_time, float(time_passed[-1]), 6, self.err_msg())
+        self.assertTime(end_time - start_time, float(time_passed[-1]))
+        self.assertTime(end_time - start_time, self.tt.tocvalue())
+
+    def assertTime(self, expected, actual, *args, **kwargs):
+        # Measure equality to 6 decimal places to avoid float precision errors
+        self.assertAlmostEqual(expected, actual, 6, self.err_msg(), *args, **kwargs)
 
     def test_increment(self):
         self.tictoc(0, 1)
@@ -101,7 +105,7 @@ class TicTocTest(BaseTicTocTest):
 
     def test_restart(self):
         self._run_tictoc(4, 6, restart=True)
-        self.assertAlmostEqual(6, self.tt.start, 6)
+        self.assertTime(6, self.tt.start)
 
 
 class TicTocTestWithContextManager(BaseTicTocTest):
