@@ -24,30 +24,33 @@ class TicToc(object):
     TicToc.tocvalue()  #return floating point value of elapsed time since timer start
 
     #Attributes
-    TicToc.start     #Time from timeit.default_timer() when t.tic() was last called
-    TicToc.end       #Time from timeit.default_timer() when t.toc() or t.tocvalue() was last called
+    TicToc.start     #Time from timeit.self.timer() when t.tic() was last called
+    TicToc.end       #Time from timeit.self.timer() when t.toc() or t.tocvalue() was last called
     TicToc.elapsed   #t.end - t.start; i.e., time elapsed from t.start when t.toc() or t.tocvalue() was last called
     """
 
-    def __init__(self, default_msg='Elapsed time is', stream=sys.stdout):
+    def __init__(self, default_msg='Elapsed time is', stream=None, timer=default_timer):
         """
         Create instance of TicToc class.
 
         Optional arguments:
             default_msg     - String to replace default message of 'Elapsed time is'
             stream          - Stream to write the timer message to
+            timer           - Function that returns the current time when called
         """
         self.start   = float('nan')
         self.end     = float('nan')
         self.elapsed = float('nan')
         self.default_msg = default_msg
-        self.stream = stream
+        self.stream = stream or sys.stdout
+        self.timer = timer
+        assert self.timer is not None
         assert self.default_msg is not None
         assert self.stream is not None
 
     def tic(self):
         """Start the timer."""
-        self.start = default_timer()
+        self.start = self.timer()
 
     def toc(self, msg=None, restart=False):
         """
@@ -60,11 +63,11 @@ class TicToc(object):
         if msg is None:
             msg = self.default_msg
 
-        self.end     = default_timer()
+        self.end     = self.timer()
         self.elapsed = self.end - self.start
-        print(self.tocmsg(msg, self.elapsed), file=self.stream)
+        print(self._tocmsg(msg, self.elapsed), file=self.stream)
         if restart:
-            self.start = default_timer()
+            self.start = self.timer()
 
     def tocvalue(self, restart=False):
         """
@@ -73,13 +76,13 @@ class TicToc(object):
         Optional argument:
             restart - Boolean specifying whether to restart the timer
         """
-        self.end     = default_timer()
+        self.end     = self.timer()
         self.elapsed = self.end - self.start
         if restart:
-            self.start = default_timer()
+            self.start = self.timer()
         return self.elapsed
 
-    def tocmsg(self, prefix_msg, elapsed):
+    def _tocmsg(self, prefix_msg, elapsed):
         """
         Return full message that will be output on toc().
 
@@ -91,10 +94,10 @@ class TicToc(object):
 
     def __enter__(self):
         """Start the timer when using TicToc in a context manager."""
-        self.start = default_timer()
+        self.start = self.timer()
 
     def __exit__(self, *args):
         """On exit, print time elapsed since entering context manager."""
-        self.end = default_timer()
+        self.end = self.timer()
         self.elapsed = self.end - self.start
-        print(self.tocmsg(self.default_msg, self.elapsed), file=self.stream)
+        print(self._tocmsg(self.default_msg, self.elapsed), file=self.stream)
