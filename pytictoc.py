@@ -63,11 +63,8 @@ class TicToc(object):
         if msg is None:
             msg = self.default_msg
 
-        self.end     = self.timer()
-        self.elapsed = self.end - self.start
+        self.tocvalue(restart=restart)
         print(self._tocmsg(msg, self.elapsed), file=self.stream)
-        if restart:
-            self.start = self.timer()
 
     def tocvalue(self, restart=False):
         """
