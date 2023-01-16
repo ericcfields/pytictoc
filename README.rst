@@ -7,7 +7,7 @@ INSTALLATION
 pytictoc can be installed and updated via conda or pip.
 
 **pip** ::
- 
+
   pip install pytictoc
   pip install pytictoc --upgrade
 
@@ -19,7 +19,7 @@ pytictoc can be installed and updated via conda or pip.
 
 =============
 USAGE
-============= 
+=============
 
 Basic usage: ::
 
@@ -35,6 +35,14 @@ A string passed to the toc method changes the printed message. This can be usefu
   >> t.toc('Section 1 took')
   Section 1 took 16.494467 seconds.
 
+The default message can also be passed in the constructor, for easier usage with context managers:
+
+  >> with TicToc(default_msg='Section 1 took'):
+  >>     ...
+  Section 1 took 16.494467 seconds.
+
+The string passed to toc will override the string in the constructor if both are present.
+
 An optional keyword argument restarts the timer (equivalent to t.tic()) after reporting the time elapsed. ::
 
   >> t.toc(restart=True)
@@ -48,8 +56,12 @@ If you want to return the time elapsed to a variable rather than printing it, us
   >>spam
   20.156261717544602
 
+You can also pass in an alternative stream to print to:
+
+  >> t = TicToc(stream=mystream)
+
 The TicToc class can be used within a context manager as an alternative way to time a section of code. The time taken to run the code inside the with statement will be reported on exit. ::
- 
+
   >>with TicToc():
   >>    spam = [x+1 for x in range(10000)]
   Elapsed time is 0.002343 seconds.
@@ -58,7 +70,7 @@ The TicToc class can be used within a context manager as an alternative way to t
 Determining and setting the timer
 ------------------------------------
 
-pytictoc uses timeit.default_timer to time code. On Python 3.3 and later, this is an alias for time.perf_counter. On earlier versions of Python it is an alias for the most precise timer for a given system. 
+pytictoc uses timeit.default_timer to time code. On Python 3.3 and later, this is an alias for time.perf_counter. On earlier versions of Python it is an alias for the most precise timer for a given system.
 
 To see which function is being used: ::
 
@@ -66,9 +78,12 @@ To see which function is being used: ::
   >>pytictoc.default_timer
   <function time.perf_counter>
 
-You can change the timer by simple assignment. ::
-  
+You can change the timer by simple assignment, or by passing a different timer function into an object's constructor. ::
+
   >>import time
   >>pytictoc.default_timer = time.clock
   >>pytictoc.default_timer
   <function time.clock>
+
+  >>import time
+  >>pytictoc.TicToc(timer=time.clock)
