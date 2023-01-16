@@ -121,6 +121,7 @@ class TicTocTest(BaseTicTocTest):
             self.tt = ptt.TicToc(default_msg="Time:", timer=self.mock_timer)
             self.tictoc(1, -7, msg="Tic Toc")
             self.assertIn("Tic Toc -8.0", self.output())
+            self.assertNotIn("Time:", self.output())
 
     def test_restart(self):
         self._run_tictoc(4, 6, restart=True)
