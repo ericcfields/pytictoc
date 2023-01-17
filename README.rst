@@ -35,7 +35,7 @@ A string passed to the toc method changes the printed message. This can be usefu
   >> t.toc('Section 1 took')
   Section 1 took 16.494467 seconds.
 
-The default message can also be passed in the constructor, for easier usage with context managers:
+The default message can also be passed in the constructor, for easier usage with context managers: ::
 
   >> with TicToc(default_msg='Section 1 took'):
   >>     ...
@@ -56,7 +56,7 @@ If you want to return the time elapsed to a variable rather than printing it, us
   >>spam
   20.156261717544602
 
-You can also pass in an alternative stream to print to:
+You can also pass in an alternative stream to print to: ::
 
   >> t = TicToc(stream=mystream)
 
@@ -78,12 +78,14 @@ To see which function is being used: ::
   >>pytictoc.default_timer
   <function time.perf_counter>
 
-You can change the timer by simple assignment, or by passing a different timer function into an object's constructor. ::
+You can change the timer by simple assignment: ::
 
   >>import time
   >>pytictoc.default_timer = time.clock
   >>pytictoc.default_timer
   <function time.clock>
+
+Or by passing a different timer function into an object's constructor: ::
 
   >>import time
   >>pytictoc.TicToc(timer=time.clock)
