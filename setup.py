@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #AUTHOR: Eric Fields
-#VERSION DATE: 23 April 2021
+#VERSION DATE: 2 August 2023
 
 """
 Setup file to add pytictoc to PyPi
@@ -24,7 +24,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='1.5.2',
+    version='1.5.3',
 
     description='Time code using syntax similar to tic and toc in MATLAB',
     long_description=long_description,
@@ -34,7 +34,7 @@ setup(
 
     # Author details
     author='Eric Fields',
-    author_email='eric.fields@bc.edu',
+    author_email='fieldsec@westminster.edu',
 
     # Choose your license
     license='BSD (three-clause)',

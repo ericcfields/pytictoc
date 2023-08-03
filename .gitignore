@@ -6,3 +6,4 @@ dist
 pytictoc.egg-info
 OLD
 __pycache__
+BUILD_UPLOAD/conda-bld
